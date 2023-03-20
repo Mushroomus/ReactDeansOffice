@@ -1,25 +1,41 @@
 import React, { useEffect, useState } from 'react';
 
-interface SelectTime {
+interface Intervals {
+  intervals: string[]
+}
+
+  interface SelectTimeProps {
+    selectedWorkerId: number | null;
+    selectedDate: Date | null;
     onTimeSelect: (selectedTime: string) => void;
-  }
-
-  useEffect(() => {
-    fetch('http://localhost:8081/workers')
-      .then(response => response.json())
-      .then((data: Worker[]) => {
-        //setOptions(data);
-      })
-      .catch(error => console.log(error));
-  }, []);
-
-
-const SelectTime = ({ onTimeSelect }: SelectTime) => {
-    const timeOptions = ['9:00', '9:15', '9:30', '9:45', '10:00'];
+}
   
+
+  const SelectTime = ({ selectedWorkerId, selectedDate, onTimeSelect }: SelectTimeProps) => {
+    const [options, setOptions] = useState<string[]>([]);
+  
+    const handleTimeChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
+      const selectedTime = event.target.value;
+      onTimeSelect(selectedTime);
+    };
+  
+  useEffect(() => {
+    if(selectedWorkerId != null && selectedDate != null) {
+      const timestamp = selectedDate.getTime();
+
+      fetch(`http://localhost:8081/workers/${selectedWorkerId}/workdays/${timestamp}/intervals`)
+        .then(response => response.json())
+        .then((data: Intervals) => {
+        setOptions(data.intervals);
+        onTimeSelect(data.intervals[0]);
+        })
+        .catch(error => console.log(error));
+    }
+  }, [selectedWorkerId, selectedDate]);
+
     return (
-      <select className="form-select">
-        {timeOptions.map(option => (
+      <select className="form-select" onChange={handleTimeChange}>
+        {options.map(option => (
           <option key={option} value={option}>
             {option}
           </option>

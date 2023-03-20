@@ -34,6 +34,7 @@ const SelectWorker = ({ onWorkerSelect }: SelectBoxProps) => {
       .then(response => response.json())
       .then((data: Worker[]) => {
         setOptions(data);
+        onWorkerSelect(data[0].id);
       })
       .catch(error => console.log(error));
   }, []);
