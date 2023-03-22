@@ -43,6 +43,7 @@ const AppointmentForm = () => {
 
 
   return (
+    <>
     <form onSubmit={handleFormSubmit}>
       <div className="mb-3">
         <label htmlFor="workerSelect" className="form-label">
@@ -72,6 +73,7 @@ const AppointmentForm = () => {
         Make an appointment
       </button>
     </form>
+    </>
   );
 };
 
